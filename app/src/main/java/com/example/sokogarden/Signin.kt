@@ -1,10 +1,15 @@
 package com.example.sokogarden
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.loopj.android.http.RequestParams
 
 class Signin : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,6 +20,43 @@ class Signin : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+//        find the two edit text , botton and a textview by use of their IDS
+        val email = findViewById<EditText>(R.id.email)
+
+        val password = findViewById<EditText>(R.id.password)
+
+        val signinButton = findViewById<Button>(R.id.signinBtn)
+
+        val signupTextView = findViewById<TextView>(R.id.signuptxt)
+
+    // On the textView set on click listener such that when clicked it navigates you to the signup Page
+        signupTextView.setOnClickListener {
+
+   val intent  = Intent(applicationContext, Signup::class.java)
+
+   startActivity(intent)
+
+        }
+
+//        onclick of the button signin , we need to interact with our API endpoint as we pass the two data info email and password
+        signinButton.setOnClickListener {
+            val api = "https://kbenkamotho.alwaysdata.net/api/signin"
+
+//            create a requestParams that will enable you to hold the data in form of a bundle/package
+            val data = RequestParams()
+
+//            add/append/attatch the email n the password
+            data.put("email", email.text.toString())
+            data.put("password" , password.text.toString())
+
+            //Import the API helper
+            val helper = ApiHelper(applicationContext)
+
+            //By use of the function post_login inside of the helper class, post your data
+
+            helper.post_login(api, data)
         }
     }
 }

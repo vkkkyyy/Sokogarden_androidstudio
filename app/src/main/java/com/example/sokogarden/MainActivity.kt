@@ -20,11 +20,10 @@ class MainActivity : AppCompatActivity() {
         }
 //        find buttons by use of the id
         val signinButton = findViewById<Button>(R.id.signinBtn)
-        val  SignupButton = findViewById<Button>(R.id.signupBtn)
+        val  signupButton = findViewById<Button>(R.id.signupBtn)
 
 //        Create the intent to the two  activities
-        val signupButton = null
-        SignupButton.setOnClickListener{
+        signupButton.setOnClickListener{
             val intent = Intent(applicationContext, Signup::class.java)
 
             startActivity(intent)

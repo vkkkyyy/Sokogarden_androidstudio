@@ -17,8 +17,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class ApiHelper(var context: Context) {
-    //POST
-    fun post(api: String, params: RequestParams) {
+    // POST
+    fun post(api: String, params: RequestParams, callback: ((Boolean, String) -> Unit)? = null) {
         Toast.makeText(context, "Please wait for response", Toast.LENGTH_LONG).show()
         val client = AsyncHttpClient(true, 80, 443)
 
@@ -28,7 +28,45 @@ class ApiHelper(var context: Context) {
                 headers: Array<out Header>?,
                 response: JSONObject?
             ) {
-                Toast.makeText(context, "Response: $response", Toast.LENGTH_SHORT).show()
+                try {
+                    val message = response?.optString("message") ?: "Success"
+
+                    // ✅ Extract and save user session if user object exists
+                    val user = response?.optJSONObject("user")
+                    if (user != null) {
+                        val username = user.optString("username", "")
+                        val email = user.optString("email", "")
+                        val prefs = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+                        val editor = prefs.edit()
+                        editor.putString("username", username)
+                        editor.putString("email", email)
+                        editor.apply()
+                    }
+
+                    if (message.lowercase().contains("success")) {
+                        if (callback != null) {
+                            callback(true, message)
+                        } else {
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            val intent = Intent(context, MainActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            }
+                            context.startActivity(intent)
+                        }
+                    } else {
+                        if (callback != null) {
+                            callback(false, message)
+                        } else {
+                            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+
+                } catch (e: Exception) {
+                    callback?.invoke(false, "Parsing error: ${e.message}")
+                    if (callback == null) {
+                        Toast.makeText(context, "Parsing error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
 
             override fun onFailure(
@@ -42,8 +80,8 @@ class ApiHelper(var context: Context) {
         })
     }
 
-    //Requires Access Token
-    fun post_login(api: String, params: RequestParams) {
+    // Requires Access Token
+    fun postLogin(api: String, params: RequestParams) {
         Toast.makeText(context, "Please wait for response", Toast.LENGTH_LONG).show()
         val client = AsyncHttpClient(true, 80, 443)
 
@@ -101,9 +139,9 @@ fun loadProducts(url: String, recyclerView: RecyclerView, progressBar: ProgressB
             response: JSONArray
         ) {
             progressBar?.visibility = View.GONE
-            // val productList = ProductAdapter.fromJsonArray(response)
-            // val adapter = ProductAdapter(productList)
-            // recyclerView.adapter = adapter
+             val productList = ProductAdapter.fromJsonArray(response)
+             val adapter = ProductAdapter(productList)
+             recyclerView.adapter = adapter
         }
 
         override fun onFailure(
@@ -181,7 +219,7 @@ fun loadProducts(url: String, recyclerView: RecyclerView, progressBar: ProgressB
                     //Todo handle the error
                     Toast.makeText(
                         context,
-                        "Error Occurred" + throwable.toString(),
+                        "Error Occurred: ${throwable.toString()}",
                         Toast.LENGTH_LONG
                     ).show()
 
@@ -215,7 +253,7 @@ fun loadProducts(url: String, recyclerView: RecyclerView, progressBar: ProgressB
                     //Todo handle the error
                     Toast.makeText(
                         context,
-                        "Error Occurred" + throwable.toString(),
+                        "Error Occurred: ${throwable.toString()}",
                         Toast.LENGTH_LONG
                     ).show()
                     // progressbar.visibility = View.GONE

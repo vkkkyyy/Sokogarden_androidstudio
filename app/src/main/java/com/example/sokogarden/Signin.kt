@@ -54,9 +54,8 @@ class Signin : AppCompatActivity() {
             //Import the API helper
             val helper = ApiHelper(applicationContext)
 
-            //By use of the function post_login inside of the helper class, post your data
-
-            helper.post_login(api, data)
+            // By use of the function postLogin inside of the helper class, post your data
+            helper.postLogin(api, data)
         }
     }
 }

@@ -6,6 +6,7 @@ import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -87,17 +88,31 @@ class Signup : AppCompatActivity() {
             //import of the API helper class
             val helper = ApiHelper(applicationContext)
 
-            // Inside of the helper class, access the function post
-            helper.post(api, data)
+            // 🔥 ONLY navigate after success
+            helper.post(api, data) { success, message ->
 
-            email.text.clear()
-            password.text.clear()
-            phone.text.clear()
-            username.text.clear()
+                if (success) {
+                    Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
 
-            // intent to the main activity page
-            // val intent = Intent(applicationContext, MainActivity::class.java)
-            // startActivity(intent)
+                    // ⏳ delay before navigating
+                    android.os.Handler().postDelayed({
+
+                        // clear fields
+                        username.text.clear()
+                        email.text.clear()
+                        password.text.clear()
+                        phone.text.clear()
+
+                        // navigate AFTER message is seen
+                        val intent = Intent(applicationContext, Signin::class.java)
+                        startActivity(intent)
+
+                    }, 3000) // 2 seconds delay
+
+                } else {
+                    Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 }

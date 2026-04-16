@@ -59,7 +59,7 @@ class ApiHelper(var context: Context) {
                     val username = user?.optString("username") ?: ""
                     val email = user?.optString("email") ?: ""
 
-                    // 🔐 Save to SharedPreferences
+                    // 🔐 Save to SharedPreferences-same work as the local storage
                     val prefs = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
                     val editor = prefs.edit()
                     editor.putString("username", username)

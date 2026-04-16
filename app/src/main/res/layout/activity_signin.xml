@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:padding="10dp"
             android:orientation="vertical"
-            android:background="#E7D1C8">
+            android:background="#8AA98A">
 
 <!--           Below is the email edit text -->
             <EditText

@@ -30,6 +30,7 @@ class Signup : AppCompatActivity() {
         val phone = findViewById<EditText>(R.id.phone)
         val signupButton = findViewById<Button>(R.id.signupBtn)
         val signinTextView = findViewById<TextView>(R.id.signintxt)
+        val responseTxt = findViewById<TextView>(R.id.responseTxt)
 
         // Navigate to Signin activity
         signinTextView.setOnClickListener {
@@ -113,6 +114,19 @@ class Signup : AppCompatActivity() {
                     Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
                 }
             }
+            // Inside of the helper class, access the function post
+            helper.postSignup(api, data) { message ->
+                runOnUiThread {
+                    responseTxt.text = message
+
+                    if (message.contains("success")) {
+                        email.text.clear()
+                        password.text.clear()
+                        phone.text.clear()
+                        username.text.clear()
+                    }
+                }
         }
     }
+}
 }

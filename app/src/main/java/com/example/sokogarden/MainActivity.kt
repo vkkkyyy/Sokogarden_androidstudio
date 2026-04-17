@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         val progressBar = findViewById<ProgressBar>(R.id.progressbar)
 
         //specify the API URL endpoint for fetching the product(alwaysdata)
-        val url = "https://kbenkamotho.alwaysdata.net/api/get_products"
+        val url = "https://victoria.alwaysdata.net/api/get_products"
 
         //import the help bar class
         val helper = ApiHelper(applicationContext)

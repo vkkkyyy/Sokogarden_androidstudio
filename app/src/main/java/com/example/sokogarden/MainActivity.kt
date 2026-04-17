@@ -97,5 +97,15 @@ class MainActivity : AppCompatActivity() {
 
         //inside of the helper class , access the function loadproducts
         helper.loadProducts(url , recyclerView, progressBar)
+
+        // find the About button by use of its ID and have the intent
+        val aboutButton = findViewById<Button>(R.id.aboutBtn)
+
+        //below is the intent to the About activity
+        aboutButton.setOnClickListener {
+            val intent = Intent(applicationContext, About::class.java)
+            startActivity(intent)
+
+        }
     }
 }
